@@ -52,7 +52,7 @@ def plot_month(axis: plt.Axes, df_plot: pd.DataFrame, month_index: int) -> None:
 
 def generate_data_visualization(place: str) -> None:
     # Load data/dataset-place.csv file into a dataframe
-    df = pd.read_csv(f"{DATASET_FILE}_{place}.csv", sep=",")
+    df = pd.read_csv(f"{DATASET_FILE}-{place}.csv", sep=",")
 
     months_extract = [3, 7, 10]
     years_extract = [2015, 2017, 2020]

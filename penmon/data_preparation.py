@@ -1,4 +1,5 @@
 import zipfile
+import os
 
 import pandas as pd
 import lib.penmon as pm
@@ -39,6 +40,9 @@ def extract_dataset_file() -> bool:
     try:
         with zipfile.ZipFile(f"{DATASET_FILE}.zip", "r") as zip_ref:
             zip_ref.extractall("data")
+        # Rename data/france_meteo_2014tojuillet2021.csv to data/dataset.csv
+        os.rename("data/france_meteo_2014tojuillet2021.csv", f"{DATASET_FILE}.csv")
+
         return True
     except FileNotFoundError:
         return False
@@ -54,7 +58,7 @@ def check_dataset_file_exists() -> bool:
 
 def check_dataset_place_file_exists(place: str) -> bool:
     try:
-        open(f"{DATASET_FILE}_{place}.csv")
+        open(f"{DATASET_FILE}-{place}.csv")
         return True
     except FileNotFoundError:
         return False
