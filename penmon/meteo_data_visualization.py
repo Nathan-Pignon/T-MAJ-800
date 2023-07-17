@@ -4,6 +4,8 @@ from typing import List, Any
 import pandas as pd
 import matplotlib
 
+from penmon.utils import DATASET_FILE
+
 matplotlib.use('agg')
 
 import matplotlib.pyplot as plt
@@ -17,10 +19,6 @@ MONTHS_SHORT = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
     "Aug", "Sept", "Oct", "Nov", "Dec"
 ]
-
-# Dataset file path
-dirname = os.path.dirname(__file__)
-DATASET_FILE = os.path.join(dirname, 'data/dataset')
 
 
 def generate_df_mean_irrigation_per_month_for_given_year(df: pd.DataFrame, year: int) -> pd.DataFrame:
@@ -59,7 +57,7 @@ def plot_month(axis: plt.Axes, df_plot: pd.DataFrame, month_index: int) -> list:
     axis.set_ylim(0, 6)
 
 
-def generate_data_visualization(place: str) -> list[Any]:
+def generate_meteorological_data_visualization(place: str) -> list[Any]:
     # Load data/dataset-place.csv file into a dataframe
     df = pd.read_csv(f"{DATASET_FILE}-{place}.csv", sep=",")
 
