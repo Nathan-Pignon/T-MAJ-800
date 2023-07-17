@@ -22,7 +22,8 @@ KC = {
 }
 
 # Dataset file path
-DATASET_FILE = "data/dataset"
+dirname = os.path.dirname(__file__)
+DATASET_FILE = os.path.join(dirname, 'data/dataset')
 
 
 def compute_solar_radiation_with_sunshine_minutes(sunshine_minutes: int) -> float:

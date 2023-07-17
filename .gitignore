@@ -52,4 +52,6 @@ docs/_build/
 .idea
 .git
 
+env
+
 penmon/data/*.csv

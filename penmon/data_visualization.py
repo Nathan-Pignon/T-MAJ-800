@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -12,7 +14,8 @@ MONTHS_SHORT = [
 ]
 
 # Dataset file path
-DATASET_FILE = "data/dataset"
+dirname = os.path.dirname(__file__)
+DATASET_FILE = os.path.join(dirname, 'data/dataset')
 
 def generate_df_mean_irrigation_per_month_for_given_year(df: pd.DataFrame, year: int) -> pd.DataFrame:
     # Make a graph of the "Irrigiation (mm)" column per month for the given year
