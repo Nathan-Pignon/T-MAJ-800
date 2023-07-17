@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Figures</title>
+</head>
+<body>
+    {% if figures is defined %}
+        {% for figure in figures %}
+            <img src="{{ url_for('static', filename='figure' + loop.index|string + '.png') }}" alt="Figure {{ loop.index }}">
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
