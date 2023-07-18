@@ -55,4 +55,4 @@ docs/_build/
 env
 
 penmon/data/*.csv
-api/static/*.png
+app/static/*.png
