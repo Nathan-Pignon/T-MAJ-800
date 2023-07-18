@@ -10,7 +10,7 @@ sys.path.append(penmon_path + "/penmon")
 
 from penmon.meteo_data_preparation import manage_meteorological_data
 from penmon.meteo_data_visualization import generate_meteorological_data_visualization
-from penmon.cities_data_preparation import get_cities_list, update_city_details, get_city_details
+from penmon.vineyards_data_preparation import get_vineyards_list, update_vineyard_details, get_vineyard_details
 
 from flask import Flask, render_template, request, redirect
 
@@ -25,7 +25,7 @@ def handle_index_view():
 @app.route("/penmon", methods=['POST', 'GET'])
 def handle_penmon_view():
     # Check if data/vineyards.csv exists
-    vineyards = get_cities_list()
+    vineyards = get_vineyards_list()
 
     if request.method == 'POST':
         data = request.json
@@ -36,13 +36,13 @@ def handle_penmon_view():
         altitude = data['altitude']
         date = data['date']
 
-        current_data = get_city_details(vineyard)
+        current_data = get_vineyard_details(vineyard)
         if current_data["latitude"] != latitude or current_data["altitude"] != altitude:
             # Overwrite data
             manage_meteorological_data(vineyard, float(latitude), int(altitude), True)
 
             # Update vineyards.csv
-            update_city_details(vineyard, latitude, altitude)
+            update_vineyard_details(vineyard, latitude, altitude)
 
         else:
             # Generate meteorological data
@@ -65,8 +65,8 @@ def handle_penmon_view():
 
 
 @app.route("/penmon/vineyard/<name>", methods=['POST', 'GET'])
-def handle_penmon_view_city(name: str):
+def handle_penmon_view_vineyard(name: str):
     if request.method == 'POST':
         data = request.json
-        return update_city_details(name, data['latitude'], data['altitude'])
-    return get_city_details(name)
+        return update_vineyard_details(name, data['latitude'], data['altitude'])
+    return get_vineyard_details(name)
