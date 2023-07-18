@@ -12,9 +12,14 @@ from penmon.meteo_data_preparation import manage_meteorological_data
 from penmon.meteo_data_visualization import generate_meteorological_data_visualization
 from penmon.cities_data_preparation import get_cities_list, update_city_details, get_city_details
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
+
+
+@app.route("/")
+def handle_index_view():
+    return redirect("/penmon")
 
 
 @app.route("/penmon", methods=['POST', 'GET'])
