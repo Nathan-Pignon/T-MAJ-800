@@ -1,4 +1,4 @@
-# Voltron - Section IA
+# Voltron GreenTech - NAN-2 - Section IA
 Cette section du repository est consacré au travail de la section IA NAN-2 sur le sujet GreenTech du projet Voltron.
 
 ## Groupe
