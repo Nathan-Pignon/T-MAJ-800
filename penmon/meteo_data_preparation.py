@@ -1,9 +1,8 @@
-import zipfile
-import os
-
+import numpy as np
 import pandas as pd
 import lib.penmon as pm
 
+from penmon.utils import extract_dataset_file, check_dataset_file_exists, DATASET_FILE
 
 # Crop coefficient per month for vineyard (in order: min, mean, max)
 KC = {
@@ -21,51 +20,20 @@ KC = {
     12: [0.2, 0.25, 0.3]
 }
 
-# Dataset file path
-dirname = os.path.dirname(__file__)
-DATASET_FILE = os.path.join(dirname, 'data/dataset')
-
 
 def compute_solar_radiation_with_sunshine_minutes(sunshine_minutes: int) -> float:
     return sunshine_minutes * 0.012
 
 
 def format_sunshine(sunshine: list) -> int:
-    if len(sunshine) == 2:
-        return int(sunshine[0]) * 60 + int(sunshine[1][:-3])
-    return int(sunshine[0]) * 60
+    if type(sunshine) is list:
+        if len(sunshine) == 2:
+            return int(sunshine[0]) * 60 + int(sunshine[1][:-3])
+        return int(sunshine[0]) * 60
+    return 0
 
 
-def extract_dataset_file() -> bool:
-    # Unzip data/dataset.zip file
-    try:
-        with zipfile.ZipFile(f"{DATASET_FILE}.zip", "r") as zip_ref:
-            zip_ref.extractall("data")
-        # Rename data/france_meteo_2014tojuillet2021.csv to data/dataset.csv
-        os.rename("data/france_meteo_2014tojuillet2021.csv", f"{DATASET_FILE}.csv")
-
-        return True
-    except FileNotFoundError:
-        return False
-
-
-def check_dataset_file_exists() -> bool:
-    try:
-        open(f"{DATASET_FILE}.csv")
-        return True
-    except FileNotFoundError:
-        return extract_dataset_file()
-
-
-def check_dataset_place_file_exists(place: str) -> bool:
-    try:
-        open(f"{DATASET_FILE}-{place}.csv")
-        return True
-    except FileNotFoundError:
-        return False
-
-
-def set_dataframe(place: str) -> pd.DataFrame:
+def set_meteorological_dataframe(place: str) -> pd.DataFrame:
     # Load data/dataset.csv file into a dataframe
     df = pd.read_csv(f"{DATASET_FILE}.csv", sep=",")
 
@@ -106,7 +74,7 @@ def set_dataframe(place: str) -> pd.DataFrame:
     return df
 
 
-def compute_save_data(place: str, station_latitude: float, station_altitude: int, df: pd.DataFrame) -> str:
+def compute_save_meteorological_data(place: str, station_latitude: float, station_altitude: int, df: pd.DataFrame) -> str:
     # Create a station class with known location and elevation
     station = pm.Station(latitude=station_latitude, altitude=station_altitude)
     station.anemometer_height = 5
@@ -144,13 +112,16 @@ def compute_save_data(place: str, station_latitude: float, station_altitude: int
     return "Dataframe saved"
 
 
-def prepare_data(place: str, station_latitude: float, station_altitude: int, overwrite_generated_data: bool = False) -> str:
-    if not overwrite_generated_data and check_dataset_place_file_exists(place):
+def manage_meteorological_data(place: str, station_latitude: float, station_altitude: int, overwrite_generated_data: bool = False) -> str:
+    # Check if dataset file for place already exists
+    if not overwrite_generated_data and check_dataset_file_exists(f"{DATASET_FILE}-{place}"):
         return f"Dataset file for {place} already exists"
 
     # Check if dataset file exists
-    if not check_dataset_file_exists():
-        return "Main dataset file not found"
+    if not check_dataset_file_exists(DATASET_FILE):
+        res = extract_dataset_file(DATASET_FILE)
+        if not res:
+            return f"Dataset file not found"
 
-    df: pd.DataFrame = set_dataframe(place)
-    return compute_save_data(place, station_latitude, station_altitude, df)
+    df: pd.DataFrame = set_meteorological_dataframe(place)
+    return compute_save_meteorological_data(place, station_latitude, station_altitude, df)
