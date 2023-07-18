@@ -1,12 +1,13 @@
 import os
 
-penmon_path = os.path.abspath(os.path.dirname(__file__))
+external_paths = os.path.abspath(os.path.dirname(__file__))
 # Remove /api at the end
-penmon_path = penmon_path[:-4]
+external_paths = external_paths[:-4]
 
 import sys
-sys.path.append(penmon_path)
-sys.path.append(penmon_path + "/penmon")
+sys.path.append(external_paths)
+sys.path.append(external_paths + "/penmon")
+sys.path.append(external_paths + "/CNN")
 
 from penmon.meteo_data_preparation import manage_meteorological_data
 from penmon.meteo_data_visualization import generate_meteorological_data_visualization
@@ -16,10 +17,18 @@ from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
+"""
+REDIRECT
+"""
+
 
 @app.route("/")
 def handle_index_view():
     return redirect("/penmon")
+
+"""
+PENMON ROUTES
+"""
 
 
 @app.route("/penmon", methods=['POST', 'GET'])
@@ -70,3 +79,47 @@ def handle_penmon_view_vineyard(name: str):
         data = request.json
         return update_vineyard_details(name, data['latitude'], data['altitude'])
     return get_vineyard_details(name)
+
+
+"""
+DISEASES RECOGNITION ROUTES
+"""
+
+
+@app.route("/diseases", methods=['POST', 'GET'])
+def handle_diseases_view():
+    if request.method == 'POST':
+        # Get uploaded image
+        uploaded_image = request.files['file']
+
+        # Save image
+        uploaded_image.save(os.path.join(app.static_folder, 'uploaded_image_test.jpg'))
+
+        # Load single image and rescale=1 / 255
+        import tensorflow as tf
+        image_data = tf.keras.preprocessing.image.load_img(
+            os.path.join(app.static_folder, 'uploaded_image.jpg'),
+            target_size=(160, 160)
+        )
+
+        image_data = tf.keras.preprocessing.image.img_to_array(image_data)
+        image_data = tf.expand_dims(image_data, axis=0)
+        image_data /= 255
+
+        # Load model
+        model = tf.keras.models.load_model(os.path.join(external_paths, 'CNN', 'model.h5'))
+
+        # Predict
+        prediction = model.predict(image_data)
+
+        # Convert prediction
+        # Indexes are 0: BLACK_ROT, 1: ESCA, 2: HEALTHY, 3: LEAF_BLIGHT
+        prediction = prediction[0]
+        prediction = prediction.tolist()
+        prediction = prediction.index(max(prediction))
+
+        classes = ['black_rot', 'esca', 'healthy', 'leaf_blight']
+        print({"result": classes[prediction]})
+        return {"result": classes[prediction]}
+
+    return render_template('diseases.html')

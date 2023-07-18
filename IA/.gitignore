@@ -55,3 +55,4 @@ env
 
 penmon/data/*.csv
 app/static/*.png
+app/static/*.jpg
