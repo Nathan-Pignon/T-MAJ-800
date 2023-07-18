@@ -1,3 +1,16 @@
-# Voltron - Section IA
+# Voltron GreenTech - NAN-2
 
-### _Vous trouverez l'ensemble des documents à jour et versionnés dans le dossier "documents" ou [sur ce lien](https://drive.google.com/drive/folders/1LN4IbbcflLLJx0nflg_llQ_aKdlhDj_y?usp=sharing)_
+## Groupe
+Le groupe de travail NAN-2 est composé de :
+- SLIMANI Yanis
+- BALANDRAS Jules
+- BILIEC Jocelyn
+- CLAVIER Eliott
+- PIGNON Nathan
+- RIPAULT Paul
+- BOUCHET Valentin
+- BOESMIER Clément
+- FORSANS Paul
+
+## Section IA
+_L'ensemble du travail de la section IA est disponible [dans le dossier suivant](IA)_
