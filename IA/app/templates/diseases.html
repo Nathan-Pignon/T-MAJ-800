@@ -14,13 +14,40 @@
     </section>
 
     <section class="card p-4">
-        <h2>Upload an image</h2>
-        <form enctype="multipart/form-data">
-            <div class="form-group">
-                <input id="file" type="file" name="file" class="form-control-file">
+        <h2 class="mb-3">Upload an image</h2>
+        <form enctype="multipart/form-data" class="card-body p-0">
+            <div class="row align-items-end">
+                <div class="col-8">
+                    <label for="file" class="w-100">
+                        <b>Image of a single vine leave *</b>
+                        <input id="file" type="file" name="file" class="form-control mt-2" required>
+                    </label>
+                </div>
+
+                <div class="col">
+                    <button id="upload" type="button" class="btn btn-secondary w-100">
+                        <span id="upload-spin" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        Upload
+                    </button>
+                </div>
             </div>
-            <button id="upload" type="button" class="btn btn-primary">Upload</button>
         </form>
+    </section>
+
+    <section id="results" class="card p-4 mt-4 d-none">
+        <h2>Results</h2>
+        <div class="card-body mt-3 p-0">
+            <div class="row justify-content-between align-items-start">
+                <div class="col-7">
+                    <h5>Our AI has predicted that your image could be classified as</h5>
+                    <h2 class="my-3" id="day-optimal"><span id="prediction"></span></h2>
+                </div>
+                <div class="col">
+                    <h5>Confidences percentages</h5>
+                    <ul id="confidences" class="list-group"></ul>
+                </div>
+            </div>
+        </div>
     </section>
 {% endblock %}
 

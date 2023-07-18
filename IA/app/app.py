@@ -14,6 +14,9 @@ from penmon.meteo_data_visualization import generate_meteorological_data_visuali
 from penmon.vineyards_data_preparation import get_vineyards_list, update_vineyard_details, get_vineyard_details
 
 from flask import Flask, render_template, request, redirect
+import tensorflow as tf
+import numpy as np
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 app = Flask(__name__)
 
@@ -95,31 +98,37 @@ def handle_diseases_view():
         # Save image
         uploaded_image.save(os.path.join(app.static_folder, 'uploaded_image_test.jpg'))
 
-        # Load single image and rescale=1 / 255
-        import tensorflow as tf
+        # Load single image
         image_data = tf.keras.preprocessing.image.load_img(
-            os.path.join(app.static_folder, 'uploaded_image.jpg'),
+            os.path.join(app.static_folder, 'uploaded_image_test.jpg'),
             target_size=(160, 160)
         )
 
         image_data = tf.keras.preprocessing.image.img_to_array(image_data)
         image_data = tf.expand_dims(image_data, axis=0)
-        image_data /= 255
 
-        # Load model
-        model = tf.keras.models.load_model(os.path.join(external_paths, 'CNN', 'model.h5'))
+        # Preprocess image
+        img_preprocessed = preprocess_input(image_data)
+
+        # Load model from static/models
+        model = tf.keras.models.load_model(os.path.join(app.static_folder, 'models', 'model_simple.h5'))
 
         # Predict
-        prediction = model.predict(image_data)
+        prediction = model.predict(img_preprocessed)
+        score = tf.nn.softmax(prediction[0])
 
-        # Convert prediction
-        # Indexes are 0: BLACK_ROT, 1: ESCA, 2: HEALTHY, 3: LEAF_BLIGHT
-        prediction = prediction[0]
-        prediction = prediction.tolist()
-        prediction = prediction.index(max(prediction))
+        class_labels = ['Black Rot', 'Esca', 'Healthy', 'Leaf Blight']
 
-        classes = ['black_rot', 'esca', 'healthy', 'leaf_blight']
-        print({"result": classes[prediction]})
-        return {"result": classes[prediction]}
+        confidences = []
+        for i in prediction.argsort()[0][-len(class_labels):][::-1]:
+            # Append array of dict listing class name and its confidence
+            confidences.append({
+                "class": class_labels[i],
+                "score": "{:.2f}".format(100 * prediction[0][i])
+            })
 
+        return {
+            "prediction": class_labels[np.argmax(score)],
+            "confidences": confidences
+        }
     return render_template('diseases.html')

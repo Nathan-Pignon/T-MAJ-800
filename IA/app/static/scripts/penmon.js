@@ -76,6 +76,11 @@ $(document).ready(function() {
                         }
                     }
                 }
+            },
+            error: function(err) {
+                $('#results').removeClass('d-none');
+                $('#compute').removeAttr('disabled');
+                $('#compute-spin').addClass('d-none');
             }
         });
     });
