@@ -6,7 +6,7 @@ dirname = os.path.dirname(__file__)
 DATASET_FILE = os.path.join(dirname, 'data/dataset')
 
 # Cities file path
-CITIES_FILE = os.path.join(dirname, 'data/cities')
+VINEYARDS_FILE = os.path.join(dirname, 'data/vineyards')
 
 
 def extract_dataset_file(dataset_file_path: str) -> bool:

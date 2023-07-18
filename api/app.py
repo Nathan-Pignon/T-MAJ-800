@@ -19,46 +19,47 @@ app = Flask(__name__)
 
 @app.route("/penmon", methods=['POST', 'GET'])
 def handle_penmon_view():
-    # Check if data/cities.csv exists
-    cities = get_cities_list()
+    # Check if data/vineyards.csv exists
+    vineyards = get_cities_list()
 
     if request.method == 'POST':
         data = request.json
 
         # Prepare data
-        city = data['city']
+        vineyard = data['vineyard']
         latitude = data['latitude']
         altitude = data['altitude']
+        date = data['date']
 
-        current_data = get_city_details(city)
+        current_data = get_city_details(vineyard)
         if current_data["latitude"] != latitude or current_data["altitude"] != altitude:
             # Overwrite data
-            manage_meteorological_data(city, float(latitude), int(altitude), True)
+            manage_meteorological_data(vineyard, float(latitude), int(altitude), True)
 
-            # Update cities.csv
-            update_city_details(city, latitude, altitude)
+            # Update vineyards.csv
+            update_city_details(vineyard, latitude, altitude)
 
         else:
             # Generate meteorological data
-            manage_meteorological_data(city, float(latitude), int(altitude))
+            manage_meteorological_data(vineyard, float(latitude), int(altitude))
 
         # Generate data visualization
-        figures = generate_meteorological_data_visualization(city)
+        result = generate_meteorological_data_visualization(vineyard, date)
 
-        # Save each figure as an image file
-        response = []
-        for i, fig in enumerate(figures):
-            fig.savefig(os.path.join(app.static_folder, f'figure{i + 1}.png'))
-            response.append(f'figure{i + 1}.png')
+        for key in result["month"]:
+            result["month"][key].savefig(os.path.join(app.static_folder, f'month-{key}.png'))
+            result["month"][key] = f'month-{key}.png'
+
+        for key in result["year"]:
+            result["year"][key].savefig(os.path.join(app.static_folder, f'year-{key}.png'))
+            result["year"][key] = f'year-{key}.png'
 
         # Pass the figures array to the template
-        return {
-            'figures': response
-        }
-    return render_template('penmon.html', cities=cities)
+        return result
+    return render_template('penmon.html', vineyards=vineyards)
 
 
-@app.route("/penmon/city/<name>", methods=['POST', 'GET'])
+@app.route("/penmon/vineyard/<name>", methods=['POST', 'GET'])
 def handle_penmon_view_city(name: str):
     if request.method == 'POST':
         data = request.json

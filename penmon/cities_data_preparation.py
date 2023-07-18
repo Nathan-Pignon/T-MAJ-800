@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from penmon.utils import DATASET_FILE, CITIES_FILE, extract_dataset_file, check_dataset_file_exists
+from penmon.utils import DATASET_FILE, VINEYARDS_FILE, extract_dataset_file, check_dataset_file_exists
 
 
 def generate_cities_file() -> str:
@@ -36,7 +36,7 @@ def generate_cities_file() -> str:
     print(df)
 
     # Save dataframe to data/cities.csv
-    df.to_csv(f"{CITIES_FILE}.csv", index=False)
+    df.to_csv(f"{VINEYARDS_FILE}.csv", index=False)
     return "Cities file created"
 
 
@@ -48,7 +48,7 @@ def manage_cities_data():
             return f"Dataset file not found"
 
     # Check if data/cities.csv exists
-    if check_dataset_file_exists(CITIES_FILE):
+    if check_dataset_file_exists(VINEYARDS_FILE):
         return "Cities file already exists"
 
     return generate_cities_file()
@@ -56,13 +56,13 @@ def manage_cities_data():
 
 def get_cities_list():
     # Check if data/cities.csv exists
-    if not check_dataset_file_exists(CITIES_FILE):
+    if not check_dataset_file_exists(VINEYARDS_FILE):
         res = manage_cities_data()
         if not res:
             return f"Dataset file not found"
 
     # Load data/cities.csv file into a dataframe
-    df = pd.read_csv(f"{CITIES_FILE}.csv", sep=",")
+    df = pd.read_csv(f"{VINEYARDS_FILE}.csv", sep=",")
 
     # Return list of cities
     return df["name"].tolist()
@@ -70,32 +70,32 @@ def get_cities_list():
 
 def get_city_details(name: str):
     # Check if data/cities.csv exists
-    if not check_dataset_file_exists(CITIES_FILE):
+    if not check_dataset_file_exists(VINEYARDS_FILE):
         res = manage_cities_data()
         if not res:
             return f"Dataset file not found"
 
     # Load data/cities.csv file into a dataframe
-    df = pd.read_csv(f"{CITIES_FILE}.csv", sep=",")
+    df = pd.read_csv(f"{VINEYARDS_FILE}.csv", sep=",")
 
     # Keep only lines containing name in "name" column
     df = df[df["name"].str.contains(name)]
 
-    # If no city found, return None
+    # If no vineyard found, return None
     if df.empty:
         return None
 
-    # Return city details
+    # Return vineyard details
     return df.to_dict('records')[0]
 
 
 def update_city_details(name: str, latitude: float, altitude: int):
-    # Check if data/cities.csv exists
-    if not check_dataset_file_exists(CITIES_FILE):
+    # Check if data/vineyards.csv exists
+    if not check_dataset_file_exists(VINEYARDS_FILE):
         return f"Dataset file not found"
 
-    # Load data/cities.csv file into a dataframe
-    df = pd.read_csv(f"{CITIES_FILE}.csv", sep=",")
+    # Load data/vineyards.csv file into a dataframe
+    df = pd.read_csv(f"{VINEYARDS_FILE}.csv", sep=",")
 
     # Check if name is in "name" column
     if not df["name"].str.contains(name).any():
@@ -105,7 +105,7 @@ def update_city_details(name: str, latitude: float, altitude: int):
     df.loc[df["name"] == name, "latitude"] = latitude
     df.loc[df["name"] == name, "altitude"] = altitude
 
-    # Save dataframe to data/cities.csv
-    df.to_csv(f"{CITIES_FILE}.csv", index=False)
+    # Save dataframe to data/vineyards.csv
+    df.to_csv(f"{VINEYARDS_FILE}.csv", index=False)
 
     return get_city_details(name)
