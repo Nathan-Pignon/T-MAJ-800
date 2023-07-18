@@ -1,7 +1,8 @@
 import argparse
 
-from data_preparation import prepare_data
-from data_visualization import generate_data_visualization
+from meteo_data_preparation import manage_meteorological_data
+from meteo_data_visualization import generate_meteorological_data_visualization
+from cities_data_preparation import manage_cities_data
 
 
 def parse_args():
@@ -24,5 +25,5 @@ if __name__ == "__main__":
     # Example: python main.py bordeaux-merignac 44.83986528666804 42
     args = parse_args()
 
-    prepare_data(args.place, args.latitude, args.altitude, args.overwrite_data)
-    generate_data_visualization(args.place)
+    manage_meteorological_data(args.place, args.latitude, args.altitude, args.overwrite_data)
+    generate_meteorological_data_visualization(args.place)
