@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 
 from penmon.utils import DATASET_FILE, VINEYARDS_FILE, extract_dataset_file, check_dataset_file_exists
@@ -33,11 +32,9 @@ def generate_cities_file() -> str:
     df["latitude"] = 0
     df["altitude"] = 0
 
-    print(df)
-
     # Save dataframe to data/cities.csv
     df.to_csv(f"{VINEYARDS_FILE}.csv", index=False)
-    return "Cities file created"
+    return "Vineyards file created"
 
 
 def manage_cities_data():
@@ -49,7 +46,7 @@ def manage_cities_data():
 
     # Check if data/cities.csv exists
     if check_dataset_file_exists(VINEYARDS_FILE):
-        return "Cities file already exists"
+        return "Vineyards file already exists"
 
     return generate_cities_file()
 
@@ -99,7 +96,7 @@ def update_city_details(name: str, latitude: float, altitude: int):
 
     # Check if name is in "name" column
     if not df["name"].str.contains(name).any():
-        return f"City {name} not found"
+        return f"Vineyard {name} not found"
 
     # Update line with name in "name" column
     df.loc[df["name"] == name, "latitude"] = latitude
