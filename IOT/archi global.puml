@@ -1,0 +1,39 @@
+@startuml
+cloud {
+  [Serveur de donnée]
+}
+
+database "infrastructure vigneron" {
+	[gateway principale]
+
+  [relay] as R
+
+  [station météo1] as SM1
+  [station météo2] as SM2
+  [station météo...] as SMX
+
+
+  circle "capteur sol" as CS1
+  circle "capteur sol" as CS2
+  circle "capteur sol" as CS3
+  circle "capteur sol" as CS4
+  circle "capteur sol" as CS5
+  circle "capteur sol" as CS6
+
+  SM1 <.. CS1 : LORA (or espNow)
+  SM1 <.. CS2
+  SM1 <.. CS3
+  R <.. SM1
+  R <.. CS6
+  SM2 <.. CS4
+  SM2 <.. CS5
+}
+
+[Serveur de donnée] <-- [gateway principale] : WiFi (api)
+[gateway principale] <.. SM1 : LORA (or espNow)
+[gateway principale] <.. SM2 : LORA (or espNow)
+[gateway principale] <.. SMX : LORA (or espNow)
+[gateway principale] <.. R
+
+
+@enduml
