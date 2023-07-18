@@ -37,13 +37,33 @@
     <section id="results" class="card p-4 mt-4 d-none">
         <h2>Results</h2>
         <div class="card-body mt-3 p-0">
-            <div class="row justify-content-between align-items-start">
-                <div class="col-7">
-                    <h5>Our AI has predicted that your image could be classified as</h5>
-                    <h2 class="my-3" id="day-optimal"><span id="prediction"></span></h2>
+            <div class="row">
+                <div class="col">
+                    <h5>Our AI has predicted that your image could be classified as ...</h5>
+                    <h2 class="mt-3 mb-4 p-3 text-center" id="day-optimal"
+                        style="border: 1px solid lightgrey; border-radius: 1em">
+                        <b><span id="prediction"></span></b>
+                    </h2>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+
+            <div class="row justify-content-between align-items-center">
+                <div class="col">
+                    <h5>Uploaded image</h5>
                 </div>
                 <div class="col">
                     <h5>Confidences percentages</h5>
+                    <h6 class="mb-2"><i>(for each available class)</i></h6>
+                </div>
+            </div>
+
+            <div class="row justify-content-between align-items-center">
+                <div class="col">
+                    <div id="uploaded-image" class="text-center"></div>
+                </div>
+                <div class="col">
                     <ul id="confidences" class="list-group"></ul>
                 </div>
             </div>

@@ -50,7 +50,14 @@ $(document).ready(function() {
                                 - ${confidence.score}%
                             </li>`
                         );
-                    })
+                    });
+
+                    // Display uploaded image
+                    let img = $('<img />').attr('src', '/static/uploaded_image.jpg');
+                    img.css('width', 'inherit');
+                    img.css('height', 'inherit');
+                    img.addClass('img-fluid');
+                    $(`#uploaded-image`).empty().append(img);
                 }
             },
             error: function(err) {

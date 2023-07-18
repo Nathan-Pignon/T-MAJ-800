@@ -96,11 +96,11 @@ def handle_diseases_view():
         uploaded_image = request.files['file']
 
         # Save image
-        uploaded_image.save(os.path.join(app.static_folder, 'uploaded_image_test.jpg'))
+        uploaded_image.save(os.path.join(app.static_folder, 'uploaded_image.jpg'))
 
         # Load single image
         image_data = tf.keras.preprocessing.image.load_img(
-            os.path.join(app.static_folder, 'uploaded_image_test.jpg'),
+            os.path.join(app.static_folder, 'uploaded_image.jpg'),
             target_size=(160, 160)
         )
 
