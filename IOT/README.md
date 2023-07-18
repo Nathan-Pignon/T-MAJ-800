@@ -14,11 +14,22 @@ code compilé via [platformio](https://platformio.org/)
 
 Communication LoRa (via lib [FDRS](https://github.com/timmbogner/Farm-Data-Relay-System))
 
+![émetteur LoRa](img/photo_3_2023-07-18_15-35-55.jpg)
+![émetteur LoRa2](img/photo_4_2023-07-18_15-35-55.jpg)
+
 Stockage des donnée sur carte SD
 
 Prise de mesure toute les 10 seconds avec deepSleep entre chaque mesure
 
 Schémas de câblage sous [kicad 7.0](https://www.kicad.org/)
+
+pour la programmation les 2 jumper doivent être retiré
+![jumper](img/photo_2_2023-07-18_15-35-55.jpg)
+
+
+![shields](img/photo_5_2023-07-18_15-35-55.jpg)
+
+
 
 
 
@@ -30,8 +41,8 @@ Communication LoRa (via lib [FDRS](https://github.com/timmbogner/Farm-Data-Relay
 
 Envoi des données sur api (WIP) et sur le terminal serie
 
-
-https://github.com/Nathan-Pignon/T-MAJ-800/blob/main-IOT/IOT/img/photo_1_2023-07-18_15-35-55.jpg
+![gateway](img/photo_1_2023-07-18_15-35-55.jpg)
+![gateway](img/photo_6_2023-07-18_15-35-55.jpg)
 
 
 ![archi global](img/archiGraph.png)
