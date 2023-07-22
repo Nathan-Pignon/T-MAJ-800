@@ -55,5 +55,9 @@ env
 
 CNN/Datas/*
 penmon/data/*.csv
+
 app/static/generated-images/*.png
+app/static/generated-images/*.jpg
+
+app/static/uploaded-images/*.png
 app/static/uploaded-images/*.jpg

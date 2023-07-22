@@ -15,6 +15,8 @@ from penmon.meteo_data_preparation import manage_meteorological_data
 from penmon.meteo_data_visualization import generate_meteorological_data_visualization
 from penmon.vineyards_data_preparation import get_vineyards_list, update_vineyard_details, get_vineyard_details
 
+from CNN.common.cam import make_gradcam_heatmap, generate_heatmaps
+
 from flask import Flask, render_template, request, redirect
 import tensorflow as tf
 import numpy as np
@@ -104,6 +106,7 @@ def handle_diseases_view():
     if request.method == 'POST':
         # Get uploaded image
         uploaded_image = request.files['file']
+        model_name = request.form['model']
 
         # Check if image has valid extension
         if uploaded_image.filename.split('.')[-1].lower() not in ['jpg', 'jpeg', 'png']:
@@ -114,18 +117,19 @@ def handle_diseases_view():
         # Generate random name for the image with uuid
         uploaded_image.filename = str(uuid.uuid4()) + '.' + uploaded_image.filename.split('.')[-1].lower()
 
+        # Paths
+        image_path = os.path.join(app.static_folder, 'uploaded-images', uploaded_image.filename)
+        heatmaps_path = os.path.join(app.static_folder, 'uploaded-images', f'heatmaps-{uploaded_image.filename}')
+
         # Delete all images inside uploaded-images folder
         for filename in os.listdir(os.path.join(app.static_folder, 'uploaded-images')):
             os.remove(os.path.join(app.static_folder, 'uploaded-images', filename))
 
         # Save image
-        uploaded_image.save(os.path.join(app.static_folder, 'uploaded-images', uploaded_image.filename))
+        uploaded_image.save(image_path)
 
         # Load single image
-        image_data = tf.keras.preprocessing.image.load_img(
-            os.path.join(app.static_folder, 'uploaded-images', uploaded_image.filename),
-            target_size=(160, 160)
-        )
+        image_data = tf.keras.preprocessing.image.load_img(image_path, target_size=(160, 160))
 
         image_data = tf.keras.preprocessing.image.img_to_array(image_data)
         image_data = tf.expand_dims(image_data, axis=0)
@@ -134,11 +138,39 @@ def handle_diseases_view():
         img_preprocessed = preprocess_input(image_data)
 
         # Load model from static/models
-        model = tf.keras.models.load_model(os.path.join(app.static_folder, 'models', 'model_simple.h5'))
+        try:
+            model = tf.keras.models.load_model(os.path.join(app.static_folder, 'models', f'model_{model_name}.h5'))
+        except Exception as e:
+            return {
+                "message": "Model not found"
+            }, 404
 
         # Predict
         prediction = model.predict(img_preprocessed)
         score = tf.nn.softmax(prediction[0])
+
+        # Remove last layer's softmax
+        model.layers[-1].activation = None
+
+        heatmaps = []
+
+        for layer in model.layers:
+            if 'Conv2D' == layer.__class__.__name__:
+                try:
+                    heatmap = make_gradcam_heatmap(img_preprocessed, model, layer.name)
+                    if np.isnan(heatmap).any():
+                        continue
+                    else:
+                        heatmaps.append({
+                            "layer_name": layer.name,
+                            "image": heatmap
+                        })
+                except Exception as e:
+                    continue
+
+        fig = generate_heatmaps(image_path, heatmaps, True)
+        # Save fig
+        fig.savefig(heatmaps_path, bbox_inches='tight')
 
         class_labels = ['Black Rot', 'Esca', 'Healthy', 'Leaf Blight']
 
@@ -153,7 +185,8 @@ def handle_diseases_view():
         return {
             "prediction": class_labels[np.argmax(score)],
             "confidences": confidences,
-            "image": f"uploaded-images/{uploaded_image.filename}",
+            "image": f"static/uploaded-images/{uploaded_image.filename}",
+            "heatmaps": f"static/uploaded-images/heatmaps-{uploaded_image.filename}"
         }
     return render_template('diseases.html')
 

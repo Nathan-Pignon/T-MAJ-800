@@ -25,6 +25,8 @@ $(document).ready(function() {
         let formData = new FormData();
         // Append the file to FormData object
         formData.append('file', file);
+        // Append model to FormData object
+        formData.append('model', $('#model').val());
         // Send the file to the server
         $.ajax({
             url: '/diseases',
@@ -53,20 +55,28 @@ $(document).ready(function() {
                         );
                     });
 
-                    // Display uploaded image
-                    let img = $('<img />').attr('src', `/static/${data.image}`);
-                    img.css('width', 'inherit');
-                    img.css('height', 'inherit');
-                    img.addClass('img-fluid');
+                    if (data.image) {
+                        // Display uploaded image
+                        let img = $('<img />').attr('src', data.image);
+                        img.css('width', 'inherit');
+                        img.css('height', 'inherit');
+                        img.addClass('img-fluid');
 
-                    // Delete everything inside uploaded-image div
-                    $('#uploaded-image').empty();
-                    // Append the image to uploaded-image div
-                    $('#uploaded-image').append(img);
+                        $('#uploaded-image').empty().append(img);
+                    }
+
+                    if (data.heatmaps) {
+                        // Display heatmaps generated on uploaded image
+                        let heatmaps = $('<img />').attr('src', data.heatmaps);
+                        heatmaps.css('width', 'inherit');
+                        heatmaps.css('height', 'inherit');
+                        heatmaps.addClass('img-fluid');
+
+                        $('#heatmaps').empty().append(heatmaps);
+                    }
                 }
             },
             error: function(err) {
-                console.log(err.responseJSON.message)
                 if (err.responseJSON.message) {
                     $('#error').empty().append(`<p class="m-0">${err.responseJSON.message}</p>`).removeClass('d-none');
                 }

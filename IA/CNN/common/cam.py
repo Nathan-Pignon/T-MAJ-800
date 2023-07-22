@@ -3,6 +3,8 @@ import numpy as np
 from IPython.display import Image, display
 import matplotlib.cm as cm
 from keras.utils import load_img, img_to_array, array_to_img
+import matplotlib.pyplot as plt
+
 
 def get_img_array(img_path, size):
     img = load_img(img_path, target_size=size)
@@ -74,8 +76,6 @@ def generate_superimposed_gradcam(img_path, heatmap, alpha=0.4):
     return superimposed_img
 
 def display_heatmaps(img_path, heatmaps, superimposed=False):
-    import matplotlib.pyplot as plt
-
     # Define the number of columns for the subplot grid
     n_cols = min(len(heatmaps), 5)
 
@@ -121,3 +121,47 @@ def display_heatmaps(img_path, heatmaps, superimposed=False):
 
     # Show the plot
     plt.show()
+
+
+def generate_heatmaps(img_path, heatmaps, superimposed=False):
+    # Define the number of columns for the subplot grid
+    n_cols = min(len(heatmaps), 5)
+
+    # Calculate the number of rows based on the number of columns and total number of images
+    n_rows = (len(heatmaps) - 1) // n_cols + 1
+
+    # Create a figure with the desired size
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(20, 4 * n_rows))
+
+    for i, heatmap in enumerate(heatmaps):
+        # Calculate the row and column index for this heatmap
+        row = i // n_cols
+        col = i % n_cols
+
+        # Get the corresponding subplot
+        ax = axes[row, col] if n_rows > 1 else axes[col]
+
+        # Set the title of the subplot to the layer name
+        ax.set_title(heatmap['layer_name'])
+
+        if superimposed:
+            superimposed_img = generate_superimposed_gradcam(img_path, heatmaps[i]["image"])
+            # Plot the heatmap
+            ax.imshow(superimposed_img)
+        else:
+            # Plot the heatmap
+            ax.imshow(heatmaps[i]["image"], cmap='jet')
+
+    # Hide the remaining subplots that are not used
+    for i in range(len(heatmaps), n_rows * n_cols):
+        # Calculate the row and column index for this subplot
+        row = i // n_cols
+        col = i % n_cols
+
+        # Get the corresponding subplot
+        ax = axes[row, col] if n_rows > 1 else axes[col]
+
+        # Hide the subplot
+        ax.axis('off')
+
+    return fig
