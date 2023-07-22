@@ -66,13 +66,20 @@ def handle_penmon_view():
         # Generate data visualization
         result = generate_meteorological_data_visualization(vineyard, date)
 
+        # Generate random uuid
+        random_uuid = str(uuid.uuid4())
+
+        # Delete all images inside generated-images folder
+        for filename in os.listdir(os.path.join(app.static_folder, 'generated-images')):
+            os.remove(os.path.join(app.static_folder, 'generated-images', filename))
+
         for key in result["month"]:
-            result["month"][key].savefig(os.path.join(app.static_folder, f'month-{key}.png'))
-            result["month"][key] = f'month-{key}.png'
+            result["month"][key].savefig(os.path.join(app.static_folder, 'generated-images', f'{random_uuid}-month-{key}.png'))
+            result["month"][key] = f'generated-images/{random_uuid}-month-{key}.png'
 
         for key in result["year"]:
-            result["year"][key].savefig(os.path.join(app.static_folder, f'year-{key}.png'))
-            result["year"][key] = f'year-{key}.png'
+            result["year"][key].savefig(os.path.join(app.static_folder, f'generated-images/{random_uuid}-year-{key}.png'))
+            result["year"][key] = f'generated-images/{random_uuid}-year-{key}.png'
 
         # Pass the figures array to the template
         return result
