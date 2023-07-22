@@ -28,6 +28,13 @@ app = Flask(__name__)
 REDIRECT
 """
 
+# If dirs static/uploaded-images and static/generated-images do not exist, create them
+if not os.path.exists(os.path.join(app.static_folder, 'uploaded-images')):
+    os.makedirs(os.path.join(app.static_folder, 'uploaded-images'))
+
+if not os.path.exists(os.path.join(app.static_folder, 'generated-images')):
+    os.makedirs(os.path.join(app.static_folder, 'generated-images'))
+
 
 @app.route("/")
 def handle_index_view():
