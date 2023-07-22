@@ -1,10 +1,12 @@
 import os
+import uuid
 
 external_paths = os.path.abspath(os.path.dirname(__file__))
 # Remove /api at the end
 external_paths = external_paths[:-4]
 
 import sys
+
 sys.path.append(external_paths)
 sys.path.append(external_paths + "/penmon")
 sys.path.append(external_paths + "/CNN")
@@ -28,6 +30,7 @@ REDIRECT
 @app.route("/")
 def handle_index_view():
     return redirect("/penmon")
+
 
 """
 PENMON ROUTES
@@ -95,12 +98,25 @@ def handle_diseases_view():
         # Get uploaded image
         uploaded_image = request.files['file']
 
+        # Check if image has valid extension
+        if uploaded_image.filename.split('.')[-1].lower() not in ['jpg', 'jpeg', 'png']:
+            return {
+                "message": "Invalid file extension. Only jpg, jpeg and png are allowed."
+            }, 422
+
+        # Generate random name for the image with uuid
+        uploaded_image.filename = str(uuid.uuid4()) + '.' + uploaded_image.filename.split('.')[-1].lower()
+
+        # Delete all images inside uploaded-images folder
+        for filename in os.listdir(os.path.join(app.static_folder, 'uploaded-images')):
+            os.remove(os.path.join(app.static_folder, 'uploaded-images', filename))
+
         # Save image
-        uploaded_image.save(os.path.join(app.static_folder, 'uploaded_image.jpg'))
+        uploaded_image.save(os.path.join(app.static_folder, 'uploaded-images', uploaded_image.filename))
 
         # Load single image
         image_data = tf.keras.preprocessing.image.load_img(
-            os.path.join(app.static_folder, 'uploaded_image.jpg'),
+            os.path.join(app.static_folder, 'uploaded-images', uploaded_image.filename),
             target_size=(160, 160)
         )
 
@@ -129,6 +145,11 @@ def handle_diseases_view():
 
         return {
             "prediction": class_labels[np.argmax(score)],
-            "confidences": confidences
+            "confidences": confidences,
+            "image": f"uploaded-images/{uploaded_image.filename}",
         }
     return render_template('diseases.html')
+
+
+# Configuration for the app to run on the server with command "python app.py"
+app.run(host='0.0.0.0', port=81)

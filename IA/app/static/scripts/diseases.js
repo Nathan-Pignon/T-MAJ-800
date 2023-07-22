@@ -17,6 +17,7 @@ $(document).ready(function() {
         $('#results').addClass('d-none');
         $('#upload').attr('disabled', 'disabled');
         $('#upload-spin').removeClass('d-none');
+        $('#error').addClass('d-none');
 
         // Get the file from id file
         let file = $('#file')[0].files[0];
@@ -53,16 +54,25 @@ $(document).ready(function() {
                     });
 
                     // Display uploaded image
-                    let img = $('<img />').attr('src', '/static/uploaded_image.jpg');
+                    let img = $('<img />').attr('src', `/static/${data.image}`);
                     img.css('width', 'inherit');
                     img.css('height', 'inherit');
                     img.addClass('img-fluid');
-                    $(`#uploaded-image`).empty().append(img);
+
+                    // Delete everything inside uploaded-image div
+                    $('#uploaded-image').empty();
+                    // Append the image to uploaded-image div
+                    $('#uploaded-image').append(img);
                 }
             },
             error: function(err) {
-                $('#results').removeClass('d-none');
-                $('#upload').removeAttr('disabled');
+                console.log(err.responseJSON.message)
+                if (err.responseJSON.message) {
+                    $('#error').empty().append(`<p class="m-0">${err.responseJSON.message}</p>`).removeClass('d-none');
+                }
+
+                $('#results').addClass('d-none');
+                $('#upload').attr('disabled', 'disabled');
                 $('#upload-spin').addClass('d-none');
             }
         });

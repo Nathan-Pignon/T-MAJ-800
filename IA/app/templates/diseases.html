@@ -20,8 +20,8 @@
                 <div class="col-8">
                     <label for="file" class="w-100">
                         <b>Image of a single vine leave *</b>
-                        <input id="file" type="file" name="file" class="form-control mt-2" required>
-                    </label>
+                        <input id="file" type="file" name="file" accept="image/png, image/jpeg" class="form-control mt-2" required>
+                     </label>
                 </div>
 
                 <div class="col">
@@ -31,6 +31,7 @@
                     </button>
                 </div>
             </div>
+            <div id="error" class="alert alert-danger mt-3 mb-0 d-none" role="alert"></div>
         </form>
     </section>
 
