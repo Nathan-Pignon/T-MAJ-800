@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Diseases recognition
+{% endblock %}
+
+{% block content %}
+    <section>
+         <div class="d-inline-flex align-items-end">
+             <h1 class="m-0">Diseases recognition</h1>
+             <h6 class="mx-3"><i>Featuring MobileNetV2 (CNN)</i></h6>
+         </div>
+         <p class="mt-3">CNN provides a way to prevent diseases by anticipating their recognition.</p>
+    </section>
+
+    <section class="card p-4">
+        <h2 class="mb-3">Upload an image</h2>
+        <form enctype="multipart/form-data" class="card-body p-0">
+            <div class="row align-items-end">
+                <div class="col-8">
+                    <label for="file" class="w-100">
+                        <b>Image of a single vine leave *</b>
+                        <input id="file" type="file" name="file" accept="image/png, image/jpeg" class="form-control mt-2" required>
+                     </label>
+                </div>
+
+                <div class="col">
+                    <button id="upload" type="button" class="btn btn-secondary w-100">
+                        <span id="upload-spin" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        Upload
+                    </button>
+                </div>
+            </div>
+            <div id="error" class="alert alert-danger mt-3 mb-0 d-none" role="alert"></div>
+        </form>
+    </section>
+
+    <section id="results" class="card p-4 mt-4 d-none">
+        <h2>Results</h2>
+        <div class="card-body mt-3 p-0">
+            <div class="row">
+                <div class="col">
+                    <h5>Our AI has predicted that your image could be classified as ...</h5>
+                    <h2 class="mt-3 mb-4 p-3 text-center" id="day-optimal"
+                        style="border: 1px solid lightgrey; border-radius: 1em">
+                        <b><span id="prediction"></span></b>
+                    </h2>
+                </div>
+            </div>
+
+            <hr class="mb-4">
+
+            <div class="row justify-content-between align-items-center">
+                <div class="col">
+                    <h5>Uploaded image</h5>
+                </div>
+                <div class="col">
+                    <h5>Confidences percentages</h5>
+                    <h6 class="mb-2"><i>(for each available class)</i></h6>
+                </div>
+            </div>
+
+            <div class="row justify-content-between align-items-center">
+                <div class="col">
+                    <div id="uploaded-image" class="text-center"></div>
+                </div>
+                <div class="col">
+                    <ul id="confidences" class="list-group"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='scripts/diseases.js') }}"></script>
+{% endblock %}
