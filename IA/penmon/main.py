@@ -2,7 +2,7 @@ import argparse
 
 from meteo_data_preparation import manage_meteorological_data
 from meteo_data_visualization import generate_meteorological_data_visualization
-from cities_data_preparation import manage_cities_data
+from vineyards_data_preparation import manage_vineyards_data
 
 
 def parse_args():
