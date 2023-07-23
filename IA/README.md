@@ -13,19 +13,23 @@ Le groupe de travail de la section IA a établi un POC répondant à deux probl�
 - anticiper la détection de maladies dans les vignobles du client
 - optimiser l'irrigation des vignes
 
+### Détection prématurée de maladies
+
 ![image](https://github.com/Nathan-Pignon/T-MAJ-800/assets/58919064/c66df97b-811b-4515-89e4-4123d475a3fa)
 
 ![image](https://github.com/Nathan-Pignon/T-MAJ-800/assets/58919064/9d5b03b9-d0dd-467a-b5d1-231568b379bc)
 
 D'abord, l'équipe IA est de créer une intelligence artificielle permettant de détecter de manière prématurée les maladies de la vigne. Pour cela, des images des vignes sont fournies en temps réel à l’intelligence artificielle qui analuse ces dernières et détecte les maladies. Cette intelligence artificielle est ensuite servie par le biais d'une interface où le vigneron peut somuettre des images sur lesquelles l'intelligence artificielle livre des prédictions. Ces prédictions sont accompagnés de "heatmaps" permettant de comprendre les caractéristiques sur lesquels l'intelligence artificielle a porté son attention.
 
-Sur cette interface de POC, l'équipe de la section IA a également implémenté une démonstration de l'intégration de l'équation Penman-Monteith, qui permet de calculer l'irrigation optimale à fournir aux vignes selon plusieurs critères géographiques et météorologiques. Des statistiques mensuelles et annuelles sont également transmises par des graphiques.
+### Optimisation de l'irrigation
 
 ![image](https://github.com/Nathan-Pignon/T-MAJ-800/assets/58919064/ecabca61-8644-4748-937e-d0b383183204)
 
 ![image](https://github.com/Nathan-Pignon/T-MAJ-800/assets/58919064/f7492e16-4948-4fdb-8949-2b64515c5d96)
 
 ![image](https://github.com/Nathan-Pignon/T-MAJ-800/assets/58919064/6853611f-644a-4809-9265-8ee9535673fb)
+
+Sur cette interface de POC, l'équipe de la section IA a également implémenté une démonstration de l'intégration de l'équation Penman-Monteith, qui permet de calculer l'irrigation optimale à fournir aux vignes selon plusieurs critères géographiques et météorologiques. Des statistiques mensuelles et annuelles sont également transmises par des graphiques.
 
 ## Documentation
 Plusieurs documents sont disponibles pour la section IA :
