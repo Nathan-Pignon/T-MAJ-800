@@ -1,156 +1,148 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Penman-Monteith</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-</head>
-<body>
+{% extends "base.html" %}
 
-    <nav class="navbar sticky-top navbar-dark bg-dark px-3">
-        <a class="navbar-brand" href="#">Sticky top</a>
-    </nav>
+{% block title %}
+    Irrigation Rates
+{% endblock %}
 
-    <div class="p-5">
-         <section>
-             <div class="d-inline-flex align-items-end">
-                 <h1 class="m-0">Irrigation rates</h1>
-                 <h6 class="mx-3"><i>By Penman-Monteith</i></h6>
-             </div>
-             <p class="mt-3">"Penmon" allows you to compute the weather conditions of a vineyard on a specific date.</p>
-        </section>
+{% block content %}
+    <section>
+         <div class="d-inline-flex align-items-end">
+             <h1 class="m-0">Irrigation rates</h1>
+             <h6 class="mx-3"><i>By Penman-Monteith</i></h6>
+         </div>
+         <p class="mt-3">"Penmon" allows you to compute the weather conditions of a vineyard on a specific date.</p>
+    </section>
 
-        <section class="card p-4">
-            <h2>Search</h2>
-            <p>Search for a vineyard and a date to get the weather conditions.</p>
-            <i class="mb-3">The latitude and altitude of the station are the coordinates of the weather station that is used on the selected vineyard.</i>
-            <div class="card-body p-0">
-                {% if vineyards is defined %}
-                    <form class="row align-items-end">
-                        <div class="col">
-                            <label for="vineyard" class="w-100">
-                                <b>Vineyard *</b>
-                                <select class="form-control mt-2" id="vineyard" required>
-                                    <option value="">Select a vineyard</option>
-                                    {% for vineyard in vineyards %}
-                                        <option value="{{ vineyard }}">{{ vineyard|capitalize }}</option>
-                                    {% endfor %}
-                                </select>
-                            </label>
-                        </div>
-
-                        <div class="col">
-                            <label for="latitude" class="w-100">
-                                <b>Latitude of the station *</b>
-                                <input class="form-control mt-2" type="number" step="0.00000000000001" name="latitude" required>
-                            </label>
-                        </div>
-
-                        <div class="col">
-                            <label for="altitude" class="w-100">
-                                <b>Altitude of the station *</b>
-                                <input class="form-control mt-2" type="number" name="altitude" required>
-                            </label>
-                        </div>
-
-                        <div class="col">
-                            <label for="date" class="w-100">
-                                <b>Date *</b>
-                                <input class="form-control mt-2" type="date" name="date" value="2019-01-01" min="2014-01-01" max="2021-12-31" required>
-                            </label>
-                        </div>
-
-                        <div class="col">
-                            <button class="btn btn-secondary w-100 mt-2" id="compute" type="button">
-                                <span id="compute-spin" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                                Compute
-                            </button>
-                        </div>
-                    </form>
-                {% else %}
-                    <div class="alert alert-danger m-0" role="alert">
-                        <h4 class="alert-heading">Search is not available</h4>
-                        <p>No vineyard found. Search is not available.</p>
+    <section class="card p-4">
+        <h2>Search</h2>
+        <p>Search for a vineyard and a date to get the weather conditions.</p>
+        <i class="mb-3">The latitude and altitude of the station are the coordinates of the weather station that is used on the selected vineyard.</i>
+        <div class="card-body p-0">
+            {% if vineyards is defined %}
+                <form class="row align-items-end">
+                    <div class="col">
+                        <label for="vineyard" class="w-100">
+                            <b>Vineyard *</b>
+                            <select class="form-control mt-2" id="vineyard" required>
+                                <option value="">Select a vineyard</option>
+                                {% for vineyard in vineyards %}
+                                    <option value="{{ vineyard }}">{{ vineyard|capitalize }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
                     </div>
-                {% endif %}
-            </div>
-        </section>
 
-        <section id="results" class="card d-none p-4 mt-4">
-            <h2>Results</h2>
-            <div class="card-body mt-3 p-0">
-                <div class="row justify-content-between align-items-center">
-                    <h4 style="font-style: italic">Daily analysis</h4>
-                    <hr class="mt-2 mb-4">
-                    <div class="col-7">
-                        <h5>On this date, it is recommended to irrigate at the rate of</h5>
-                        <h2 class="my-3" id="day-optimal">~ -.-- mm</h2>
-                        <p>Depending on your irrigation cycle duration</p>
+                    <div class="col">
+                        <label for="latitude" class="w-100">
+                            <b>Latitude of the station *</b>
+                            <input class="form-control mt-2" type="number" step="0.1" name="latitude" required>
+                        </label>
+                    </div>
+
+                    <div class="col">
+                        <label for="altitude" class="w-100">
+                            <b>Altitude of the station *</b>
+                            <input class="form-control mt-2" type="number" name="altitude" required>
+                        </label>
+                    </div>
+
+                    <div class="col">
+                        <label for="date" class="w-100">
+                            <b>Date *</b>
+                            <input class="form-control mt-2" type="date" name="date" value="2019-01-01" min="2014-01-01" max="2021-12-31" required>
+                        </label>
+                    </div>
+
+                    <div class="col">
+                        <button class="btn btn-secondary w-100 mt-2" id="compute" type="button" disabled>
+                            <span id="compute-spin" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            Compute
+                        </button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="alert alert-danger m-0" role="alert">
+                    <h4 class="alert-heading">Search is not available</h4>
+                    <p>No vineyard found. Search is not available.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section id="results" class="card d-none p-4 mt-4">
+        <h2>Results</h2>
+        <div class="card-body mt-3 p-0">
+            <div class="row justify-content-between align-items-center">
+                <h4 style="font-style: italic">Daily analysis</h4>
+                <hr class="mt-2 mb-4">
+                <div class="col-7">
+                    <h5>On this date, it is recommended to irrigate at the rate of</h5>
+                    <h2 class="my-3" id="day-optimal">~ -.-- mm</h2>
+                    <p>Depending on your irrigation cycle duration</p>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <h5 style="font-style: italic">Min. irrigation rate <u>required</u></h5>
+                            <h5 id="day-min">~ -.-- mm</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h5 style="font-style: italic">Max. irrigation rate <u>accepted</u></h5>
+                            <h5 id="day-max">~ -.-- mm</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body mt-5 p-0">
+            <div class="row justify-content-between align-items-center">
+                <h4 style="font-style: italic">Monthly report</h4>
+                <hr class="mt-2 mb-4">
+                <p>These graphs show the evolution of the irrigation rates computed on the current month and the previous and next months.</p>
+                <div class="row">
+                    <div class="col">
+                        <h3 class="text-center">M-1</h3>
+                        <div id="month-previous"></div>
                     </div>
                     <div class="col">
-                        <div class="row">
-                            <div class="col">
-                                <h5 style="font-style: italic">Min. irrigation rate <u>required</u></h5>
-                                <h5 id="day-min">~ -.-- mm</h5>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <h5 style="font-style: italic">Max. irrigation rate <u>accepted</u></h5>
-                                <h5 id="day-max">~ -.-- mm</h5>
-                            </div>
-                        </div>
+                        <h3 class="text-center">M</h3>
+                        <div id="month-current"></div>
+                    </div>
+                    <div class="col">
+                        <h3 class="text-center">M+1</h3>
+                        <div id="month-next"></div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="card-body mt-5 p-0">
-                <div class="row justify-content-between align-items-center">
-                    <h4 style="font-style: italic">Monthly report</h4>
-                    <hr class="mt-2 mb-4">
-                    <p>These graphs show the evolution of the irrigation rates computed on the current month and the previous and next months.</p>
-                    <div class="row">
-                        <div class="col">
-                            <h3 class="text-center">M-1</h3>
-                            <div id="month-previous"></div>
-                        </div>
-                        <div class="col">
-                            <h3 class="text-center">M</h3>
-                            <div id="month-current"></div>
-                        </div>
-                        <div class="col">
-                            <h3 class="text-center">M+1</h3>
-                            <div id="month-next"></div>
-                        </div>
+        <div class="card-body mt-5 p-0">
+            <div class="row justify-content-between align-items-center">
+                <h4 style="font-style: italic">Current year report</h4>
+                <hr class="mt-2 mb-4">
+                <p>These graphs show the evolution of the irrigation rates computed on the current year.</p>
+                <div class="row">
+                    <div class="col">
+                        <h3 class="text-center">Min. rate required</h3>
+                        <div id="year-min"></div>
+                    </div>
+                    <div class="col">
+                        <h3 class="text-center">Recommended rate</h3>
+                        <div id="year-optimal"></div>
+                    </div>
+                    <div class="col">
+                        <h3 class="text-center">Max. rate accepted</h3>
+                        <div id="year-max"></div>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+{% endblock %}
 
-            <div class="card-body mt-5 p-0">
-                <div class="row justify-content-between align-items-center">
-                    <h4 style="font-style: italic">Current year report</h4>
-                    <hr class="mt-2 mb-4">
-                    <p>These graphs show the evolution of the irrigation rates computed on the current year.</p>
-                    <div class="row">
-                        <div class="col">
-                            <h3 class="text-center">Min. rate required</h3>
-                            <div id="year-min"></div>
-                        </div>
-                        <div class="col">
-                            <h3 class="text-center">Recommended rate</h3>
-                            <div id="year-optimal"></div>
-                        </div>
-                        <div class="col">
-                            <h3 class="text-center">Max. rate accepted</h3>
-                            <div id="year-max"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-</body>
-<!-- import jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="{{ url_for('static', filename='scripts/penmon.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-</html>
+{% block script %}
+    <script src="{{ url_for('static', filename='scripts/penmon.js') }}"></script>
+{% endblock %}

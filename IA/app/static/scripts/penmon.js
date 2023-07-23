@@ -67,15 +67,22 @@ $(document).ready(function() {
                             if (key === 'day') {
                                 $(`#day-${subKey}`).html(`~ ${data[key][subKey]} mm`);
                             } else {
-                                let img = $('<img />').attr('src', '/static/' + data[key][subKey]);
+                                let img = $('<img />').attr('src', `/static/${data[key][subKey]}`);
                                 img.css('width', 'inherit');
                                 img.css('height', 'inherit');
                                 img.addClass('img-fluid');
-                                $(`#${key}-${subKey}`).empty().append(img);
+
+                                $(`#${key}-${subKey}`).empty();
+                                $(`#${key}-${subKey}`).append(img);
                             }
                         }
                     }
                 }
+            },
+            error: function(err) {
+                $('#results').removeClass('d-none');
+                $('#compute').removeAttr('disabled');
+                $('#compute-spin').addClass('d-none');
             }
         });
     });

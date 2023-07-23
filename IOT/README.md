@@ -53,8 +53,17 @@ L'architecture globale du système est un réseau en étoile, c'est-à-dire que 
 
 Exemple d'archi :
 
+
+
 ![archi global](img/archiGraph.png)
 
 - Toutes les communications en pointillé peuvent être fait en LoRa ou avec ESPnow suivant la distance (ESPnow est une sorte de wifi lite en P2P créé par expressif pour communiquer entre ESP)
 
 - EspNow sera choisi pour les petites distance (-70m) car meilleure bande passante et intégrée à l'ESP (donc pas besoins de module LoRa)
+
+
+
+# shéma de cablage :
+
+
+![image](https://github.com/Nathan-Pignon/T-MAJ-800/assets/16057094/2e3b3dd1-b85e-428e-a4d0-aa6a4515870a)
